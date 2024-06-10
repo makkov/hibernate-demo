@@ -128,12 +128,12 @@ public class App {
 //        }
 
 //        рассмотрение Eager и Lazy
-        try (Session session  = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-
-            Author author = session.get(Author.class, 1);
-            System.out.println(author);
-            System.out.println(author.getBooks());
+//        try (Session session  = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author author = session.get(Author.class, 1);
+//            System.out.println(author);
+//            System.out.println(author.getBooks());
             /*
             LAZY:
             Hibernate: select a1_0.id,a1_0.name from authors a1_0 where a1_0.id=?
@@ -142,6 +142,60 @@ public class App {
             EAGER:
             Hibernate: select a1_0.id,a1_0.name,b1_0.author_id,b1_0.id,b1_0.name from authors a1_0 left join books b1_0 on a1_0.id=b1_0.author_id where a1_0.id=?
             * */
+//        }
+
+//        демонстрация проблемы N + 1
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+
+//            N + 1
+//            List<Author> authors = session.createQuery("select a from Author a", Author.class)
+//                    .getResultList();
+
+//            решение проблемы N + 1
+            List<Author> authors = session.createQuery("select a from Author a left join fetch a.books", Author.class)
+                    .getResultList();
+
+            for (Author author :authors) {
+                System.out.printf("Список книг автора %s: %s%n", author.getName(), author.getBooks());
+
+                /*
+LAZY fetchType:
+Hibernate: select a1_0.id,a1_0.name from authors a1_0
+Список книг автора First author: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=103, name='самая новая книга'}]
+Список книг автора Second author: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=1, name='Second author's book'}, Book{id=100, name='Еще одна книга второго автора под id 1'}, Book{id=101, name='новая книга'}, Book{id=102, name='еще одна новая книга'}]
+Список книг автора 2 автор: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=4, name='book 1'}, Book{id=0, name='First book'}]
+Список книг автора третий автор: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=5, name='book 2'}]
+Список книг автора 4й автор: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=104, name='книга еще новее'}]
+Список книг автора ПЯТЫЙ автор: Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+[Book{id=105, name='новейшая книга'}]
+
+EAGER FETCH:
+Hibernate: select a1_0.id,a1_0.name from authors a1_0
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+Список книг автора First author: [Book{id=103, name='самая новая книга'}]
+Список книг автора Second author: [Book{id=1, name='Second author's book'}, Book{id=100, name='Еще одна книга второго автора под id 1'}, Book{id=101, name='новая книга'}, Book{id=102, name='еще одна новая книга'}]
+Список книг автора 2 автор: [Book{id=4, name='book 1'}, Book{id=0, name='First book'}]
+Список книг автора третий автор: [Book{id=5, name='book 2'}]
+Список книг автора 4й автор: [Book{id=104, name='книга еще новее'}]
+Список книг автора ПЯТЫЙ автор: [Book{id=105, name='новейшая книга'}]
+
+C LEFT JOIN: - один запрос
+Hibernate: select a1_0.id,b1_0.author_id,b1_0.id,b1_0.name,a1_0.name from authors a1_0 left join books b1_0 on a1_0.id=b1_0.author_id
+                * */
+            }
+
+            session.getTransaction().commit();
         }
     }
 }
