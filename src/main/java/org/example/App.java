@@ -1,7 +1,9 @@
 package org.example;
 
+import org.example.entity.Account;
 import org.example.entity.Author;
 import org.example.entity.Book;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -12,7 +14,8 @@ public class App {
     public static void main(String[] args) {
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(Author.class)
-                .addAnnotatedClass(Book.class);
+                .addAnnotatedClass(Book.class)
+                .addAnnotatedClass(Account.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
@@ -73,6 +76,28 @@ public class App {
 //            session.getTransaction().commit();
 //        }
 
+//        создание нового аккаунта для автора
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author author = session.get(Author.class, 1);
+//            Account newAccount = new Account("acc/nb/2024-06-10", author);
+//            session.persist(newAccount);
+//
+//            session.getTransaction().commit();
+//        }
+//    }
 
+//        удаление с cascade
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+
+            Author author = session.get(Author.class, 101);
+
+            session.remove(author);
+
+            session.getTransaction().commit();
+        }
     }
+
 }
