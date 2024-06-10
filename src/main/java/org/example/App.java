@@ -126,5 +126,22 @@ public class App {
 //
 //            session.getTransaction().commit();
 //        }
+
+//        рассмотрение Eager и Lazy
+        try (Session session  = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+
+            Author author = session.get(Author.class, 1);
+            System.out.println(author);
+            System.out.println(author.getBooks());
+            /*
+            LAZY:
+            Hibernate: select a1_0.id,a1_0.name from authors a1_0 where a1_0.id=?
+            Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.author_id=?
+
+            EAGER:
+            Hibernate: select a1_0.id,a1_0.name,b1_0.author_id,b1_0.id,b1_0.name from authors a1_0 left join books b1_0 on a1_0.id=b1_0.author_id where a1_0.id=?
+            * */
+        }
     }
 }
