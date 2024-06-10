@@ -3,9 +3,14 @@ package org.example;
 import org.example.entity.Account;
 import org.example.entity.Author;
 import org.example.entity.Book;
+import org.example.entity.PublishingHouse;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Hello world!
@@ -15,7 +20,8 @@ public class App {
         Configuration configuration = new Configuration()
                 .addAnnotatedClass(Author.class)
                 .addAnnotatedClass(Book.class)
-                .addAnnotatedClass(Account.class);
+                .addAnnotatedClass(Account.class)
+                .addAnnotatedClass(PublishingHouse.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
@@ -89,15 +95,36 @@ public class App {
 //    }
 
 //        удаление с cascade
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author author = session.get(Author.class, 101);
+//
+//            session.remove(author);
+//
+//            session.getTransaction().commit();
+//        }
+//    }
 
-            Author author = session.get(Author.class, 101);
-
-            session.remove(author);
-
-            session.getTransaction().commit();
-        }
+//        many-to-many
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            PublishingHouse publishingHouse1 = new PublishingHouse("house 1");
+//            PublishingHouse publishingHouse2 = new PublishingHouse("house 2");
+//
+//            Book book1 = new Book("book 1");
+//            Book book2 = new Book("book 2");
+//
+//            publishingHouse1.setBooks(new ArrayList<>(Arrays.asList(book1, book2)));
+//            publishingHouse2.setBooks(new ArrayList<>(Arrays.asList(book1, book2)));
+//
+//            session.persist(book1);
+//            session.persist(book2);
+//            session.persist(publishingHouse1);
+//            session.persist(publishingHouse2);
+//
+//            session.getTransaction().commit();
+//        }
     }
-
 }

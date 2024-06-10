@@ -2,6 +2,8 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "books")
 public class Book {
@@ -16,6 +18,9 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private Author author;
+
+    @ManyToMany(mappedBy = "books")
+    private List<PublishingHouse> publishingHouses;
 
     public Book() {
     }
@@ -51,6 +56,14 @@ public class Book {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public List<PublishingHouse> getPublishingHouses() {
+        return publishingHouses;
+    }
+
+    public void setPublishingHouses(List<PublishingHouse> publishingHouses) {
+        this.publishingHouses = publishingHouses;
     }
 
     @Override
