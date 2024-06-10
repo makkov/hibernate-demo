@@ -2,6 +2,8 @@ package org.example.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "authors")
 public class Author {
@@ -12,6 +14,9 @@ public class Author {
     private Integer id;
 
     private String name;
+
+    @OneToMany(mappedBy = "author")
+    private List<Book> books;
 
     public Author() {
     }
@@ -36,22 +41,12 @@ public class Author {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Author)) return false;
-
-        Author author = (Author) o;
-
-        if (getId() != null ? !getId().equals(author.getId()) : author.getId() != null) return false;
-        return getName() != null ? getName().equals(author.getName()) : author.getName() == null;
+    public List<Book> getBooks() {
+        return books;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        return result;
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

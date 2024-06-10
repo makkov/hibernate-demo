@@ -2,7 +2,6 @@ package org.example;
 
 import org.example.entity.Author;
 import org.example.entity.Book;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -28,14 +27,52 @@ public class App {
 //        }
 
 //        сохранение книги
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Book newBook = new Book("First book");
+//            session.persist(newBook);
+//
+//            session.getTransaction().commit();
+//        }
 
-            Book newBook = new Book("First book");
-            session.persist(newBook);
+//        создание автора и его книги
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author newAuthor = new Author("Second author");
+//            Book newBook = new Book("Second author's book", newAuthor);
+//
+////            если нужно, чтобы объект автор содержал книги
+////            newAuthor.setBooks(new ArrayList<Book>(Collections.singleton(newBook)));
+//
+//            session.persist(newAuthor);
+//            session.persist(newBook);
+//
+//            session.getTransaction().commit();
+//        }
 
-            session.getTransaction().commit();
-        }
+//        получение автора с книгами
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author author = session.get(Author.class, 1);
+//            System.out.println(author);
+//        }
+
+//        удаление автора
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+//            Author author = session.get(Author.class, 101);
+//
+//            author.setName("new name 2");
+////            session.detach(author); чтобы изменения не применились на БД
+//
+//            session.remove(author);
+//            session.getTransaction().commit();
+//        }
+
 
     }
 }

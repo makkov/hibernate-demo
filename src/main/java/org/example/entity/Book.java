@@ -13,11 +13,20 @@ public class Book {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    private Author author;
+
     public Book() {
     }
 
     public Book(String name) {
         this.name = name;
+    }
+
+    public Book(String name, Author author) {
+        this.name = name;
+        this.author = author;
     }
 
     public Integer getId() {
@@ -36,22 +45,12 @@ public class Book {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-
-        Book book = (Book) o;
-
-        if (getId() != null ? !getId().equals(book.getId()) : book.getId() != null) return false;
-        return getName() != null ? getName().equals(book.getName()) : book.getName() == null;
+    public Author getAuthor() {
+        return author;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        return result;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     @Override
