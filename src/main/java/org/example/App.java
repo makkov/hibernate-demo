@@ -196,7 +196,7 @@ Hibernate: select a1_0.id,b1_0.author_id,b1_0.id,b1_0.name,a1_0.name from author
 //            session.getTransaction().commit();
 //        }
 
-//        пример сохранения сущности с сотсавным ключем
+//        пример сохранения сущности с сотсавным ключом
 //        try (Session session = sessionFactory.getCurrentSession()) {
 //            session.beginTransaction();
 //            Passport newPassport = new Passport(1, "name 1");
@@ -205,10 +205,19 @@ Hibernate: select a1_0.id,b1_0.author_id,b1_0.id,b1_0.name,a1_0.name from author
 //        }
 
 //        пример получения сущности по составному ключу
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//            Passport passport = session.get(Passport.class, new PassportId(1, "name 1"));
+//            System.out.println(passport);
+//            session.getTransaction().commit();
+//        }
+//    }
+
+//        пример сохранения сущности с сотсавным ключом через @Embeddable
         try (Session session = sessionFactory.getCurrentSession()) {
             session.beginTransaction();
-            Passport passport = session.get(Passport.class, new PassportId(1, "name 11"));
-            System.out.println(passport);
+            Passport newPassport = new Passport(new PassportId(2, "name 2 embeded"));
+            session.persist(newPassport);
             session.getTransaction().commit();
         }
     }

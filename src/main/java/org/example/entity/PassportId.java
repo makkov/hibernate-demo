@@ -1,7 +1,10 @@
 package org.example.entity;
 
+import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 
+@Embeddable
 public class PassportId implements Serializable {
 
     private Integer number;
@@ -30,5 +33,13 @@ public class PassportId implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "PassportId{" +
+                "number=" + number +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
