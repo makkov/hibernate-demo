@@ -1,9 +1,6 @@
 package org.example;
 
-import org.example.entity.Account;
-import org.example.entity.Author;
-import org.example.entity.Book;
-import org.example.entity.PublishingHouse;
+import org.example.entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -21,7 +18,8 @@ public class App {
                 .addAnnotatedClass(Author.class)
                 .addAnnotatedClass(Book.class)
                 .addAnnotatedClass(Account.class)
-                .addAnnotatedClass(PublishingHouse.class);
+                .addAnnotatedClass(PublishingHouse.class)
+                .addAnnotatedClass(Passport.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
@@ -145,19 +143,19 @@ public class App {
 //        }
 
 //        демонстрация проблемы N + 1
-        try (Session session = sessionFactory.getCurrentSession()) {
-            session.beginTransaction();
-
-//            N + 1
-//            List<Author> authors = session.createQuery("select a from Author a", Author.class)
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//
+////            N + 1
+////            List<Author> authors = session.createQuery("select a from Author a", Author.class)
+////                    .getResultList();
+//
+////            решение проблемы N + 1
+//            List<Author> authors = session.createQuery("select a from Author a left join fetch a.books", Author.class)
 //                    .getResultList();
-
-//            решение проблемы N + 1
-            List<Author> authors = session.createQuery("select a from Author a left join fetch a.books", Author.class)
-                    .getResultList();
-
-            for (Author author :authors) {
-                System.out.printf("Список книг автора %s: %s%n", author.getName(), author.getBooks());
+//
+//            for (Author author :authors) {
+//                System.out.printf("Список книг автора %s: %s%n", author.getName(), author.getBooks());
 
                 /*
 LAZY fetchType:
@@ -193,8 +191,33 @@ Hibernate: select b1_0.author_id,b1_0.id,b1_0.name from books b1_0 where b1_0.au
 C LEFT JOIN: - один запрос
 Hibernate: select a1_0.id,b1_0.author_id,b1_0.id,b1_0.name,a1_0.name from authors a1_0 left join books b1_0 on a1_0.id=b1_0.author_id
                 * */
-            }
+//            }
+//
+//            session.getTransaction().commit();
+//        }
 
+//        пример сохранения сущности с сотсавным ключом
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//            Passport newPassport = new Passport(1, "name 1");
+//            session.persist(newPassport);
+//            session.getTransaction().commit();
+//        }
+
+//        пример получения сущности по составному ключу
+//        try (Session session = sessionFactory.getCurrentSession()) {
+//            session.beginTransaction();
+//            Passport passport = session.get(Passport.class, new PassportId(1, "name 1"));
+//            System.out.println(passport);
+//            session.getTransaction().commit();
+//        }
+//    }
+
+//        пример сохранения сущности с сотсавным ключом через @Embeddable
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Passport newPassport = new Passport(new PassportId(2, "name 2 embeded"));
+            session.persist(newPassport);
             session.getTransaction().commit();
         }
     }
