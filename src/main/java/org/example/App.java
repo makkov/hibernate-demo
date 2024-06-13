@@ -195,7 +195,6 @@ Hibernate: select a1_0.id,b1_0.author_id,b1_0.id,b1_0.name,a1_0.name from author
                 * */
             }
 
-
             session.getTransaction().commit();
         }
     }
